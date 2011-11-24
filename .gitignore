@@ -1,6 +1,8 @@
 assets/
 bin/
 gen/
+.settings/
 .classpath
 .project
+default.properties
 project.properties
