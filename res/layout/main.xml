@@ -23,5 +23,10 @@
         android:layout_marginTop="10dip"
         android:layout_marginRight="20dip"
         android:text="Login"/>
+    
+    <ListView android:id="@+id/lvFriends"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvHello"/>
 
 </RelativeLayout>
