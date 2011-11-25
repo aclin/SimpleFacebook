@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.alin.simplefacebook.AsyncFacebookRunner.RequestListener;
 import com.alin.simplefacebook.Facebook.DialogListener;
@@ -41,6 +42,10 @@ public class SimpleFacebook extends Activity implements View.OnClickListener {
         setListeners();
         //fbArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         fbArrayAdapter = new ArrayAdapter<String>(this, R.layout.friendlist);
+        if (fb.isSessionValid())
+        	btLogin.setText("Logout");
+        else
+        	btLogin.setText("Login");
     }
     
     private void findViews() {
@@ -52,29 +57,40 @@ public class SimpleFacebook extends Activity implements View.OnClickListener {
     	btLogin.setOnClickListener(this);
     }
     
-    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        fb.authorizeCallback(requestCode, resultCode, data);
+    }
     
     public void onClick(View v) {
     	switch(v.getId()) {
     	case R.id.btLogin:
-    		fb.authorize(SimpleFacebook.this, new String[] {"read_friendlists",},
-					new DialogListener() {
-						@Override
-						public void onComplete(Bundle values) {
-							fbAsyncRunner.request("me/friends", friendsRequestListener);
-							lvFriends.setAdapter(fbArrayAdapter);
+    		if (!fb.isSessionValid()) {
+	    		fb.authorize(SimpleFacebook.this, new String[] {"read_friendlists",},
+						new DialogListener() {
+							@Override
+							public void onComplete(Bundle values) {
+								fbAsyncRunner.request("me/friends", friendsRequestListener);
+								lvFriends.setAdapter(fbArrayAdapter);
+							}
+							
+							@Override
+							public void onFacebookError(FacebookError error) {}
+							
+							@Override
+							public void onError(DialogError e) {}
+							
+							@Override
+							public void onCancel() {}
 						}
-						
-						@Override
-						public void onFacebookError(FacebookError error) {}
-						
-						@Override
-						public void onError(DialogError e) {}
-						
-						@Override
-						public void onCancel() {}
-					}
-			);
+				);
+	    		btLogin.setText("Logout");
+    		} else {
+    			fbAsyncRunner.logout(SimpleFacebook.this, logoutListener);
+    			btLogin.setText("Login");
+    		}
     		break;
     	}
     }
@@ -132,10 +148,42 @@ public class SimpleFacebook extends Activity implements View.OnClickListener {
 		}
     };
     
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    private RequestListener logoutListener = new RequestListener() {
 
-        fb.authorizeCallback(requestCode, resultCode, data);
-    }
+		@Override
+		public void onMalformedURLException(MalformedURLException e,
+				Object state) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onIOException(IOException e, Object state) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onFileNotFoundException(FileNotFoundException e,
+				Object state) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onFacebookError(FacebookError e, Object state) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onComplete(String response, Object state) {
+			SimpleFacebook.this.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(SimpleFacebook.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
+    };
 }
