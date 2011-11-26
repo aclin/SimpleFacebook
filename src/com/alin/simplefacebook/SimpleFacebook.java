@@ -89,7 +89,6 @@ public class SimpleFacebook extends Activity implements View.OnClickListener {
 	    		btLogin.setText("Logout");
     		} else {
     			fbAsyncRunner.logout(SimpleFacebook.this, logoutListener);
-    			btLogin.setText("Login");
     		}
     		break;
     	}
@@ -181,7 +180,11 @@ public class SimpleFacebook extends Activity implements View.OnClickListener {
 			SimpleFacebook.this.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
+					fbArrayAdapter.clear();
+					fbArrayAdapter.notifyDataSetChanged();
+					lvFriends.setAdapter(fbArrayAdapter);
 					Toast.makeText(SimpleFacebook.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+	    			btLogin.setText("Login");
 				}
 			});
 		}
