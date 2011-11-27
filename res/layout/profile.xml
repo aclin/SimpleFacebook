@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+    <TextView android:id="@+id/tvFrdName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    
+    <EditText android:id="@+id/etWallMsg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvFrdName"
+        />
+    
+    <Button android:id="@+id/btPostMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/etWallMsg"
+        android:text="POST"
+        android:textSize="25dip"
+        />
+    
+    <ListView android:id="@+id/lvMsgs"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btPostMsg"
+        />
+
+</RelativeLayout>
