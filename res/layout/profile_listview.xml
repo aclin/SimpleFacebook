@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+	
+	<TextView android:id="@+id/tvProfileName"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="3dip"
+		android:layout_marginLeft="3dip"
+		android:layout_marginRight="3dip"
+		android:textSize="15dip">
+		</TextView>
+	
+	<TextView android:id="@+id/tvProfileMsg"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="3dip"
+		android:layout_marginLeft="3dip"
+		android:layout_marginRight="3dip"
+		android:layout_below="@+id/tvProfileName"
+		android:textSize="15dip">
+	    
+	</TextView>
+</RelativeLayout>
