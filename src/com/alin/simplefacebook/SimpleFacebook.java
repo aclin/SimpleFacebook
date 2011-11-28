@@ -30,11 +30,12 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
 	public static final String APP_ID = "175729095772478";
 	public static final String KEY_ID = "FriendID";
 	public static final String KEY_NAME = "FriendName";
+	
 	private static final int PROFILE_REQUEST = 0;
 	
-	private Facebook fb = new Facebook(APP_ID);
+	public static Facebook fb = new Facebook(APP_ID);
 	private AsyncFacebookRunner fbAsyncRunner = new AsyncFacebookRunner(fb);
-	private JSONObject friend;
+	
 	private JSONArray friendlist;
 	
 	Button btLogin;
@@ -75,7 +76,7 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
     		if (!fb.isSessionValid()) {
 	    		fb.authorize(SimpleFacebook.this, new String[] {"read_friendlists", "publish_stream", "read_stream"},
 						new DialogListener() {
-							@Override
+							
 							public void onComplete(Bundle values) {
 								fbAsyncRunner.request("me/friends", friendsRequestListener);
 								lvFriends.setAdapter(fbArrayAdapter);
@@ -83,13 +84,13 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
 								tvHello.setText("Friends List");
 							}
 							
-							@Override
+							
 							public void onFacebookError(FacebookError error) {}
 							
-							@Override
+							
 							public void onError(DialogError e) {}
 							
-							@Override
+							
 							public void onCancel() {}
 						}
 				);
@@ -128,11 +129,12 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
     
     private RequestListener friendsRequestListener = new RequestListener() {
 
-		@Override
+		
 		public void onComplete(final String response, final Object state) {
 			SimpleFacebook.this.runOnUiThread(new Runnable() {
 				public void run() {
 					try {
+						JSONObject friend;
 						friend = new JSONObject(response);
 						friendlist = friend.getJSONArray("data");
 						
@@ -150,27 +152,27 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
 			});
 		}
 
-		@Override
+		
 		public void onIOException(IOException e, Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onFileNotFoundException(FileNotFoundException e,
 				Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onMalformedURLException(MalformedURLException e,
 				Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onFacebookError(FacebookError e, Object state) {
 			// TODO Auto-generated method stub
 			
@@ -179,36 +181,36 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
     
     private RequestListener logoutListener = new RequestListener() {
 
-		@Override
+		
 		public void onMalformedURLException(MalformedURLException e,
 				Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onIOException(IOException e, Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onFileNotFoundException(FileNotFoundException e,
 				Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onFacebookError(FacebookError e, Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onComplete(String response, Object state) {
 			SimpleFacebook.this.runOnUiThread(new Runnable() {
-				@Override
+				
 				public void run() {
 					fbArrayAdapter.clear();
 					fbArrayAdapter.notifyDataSetChanged();
@@ -221,7 +223,7 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
     };
     
     private RequestListener profilePictureRequestListener = new RequestListener() {
-    	@Override
+    	
 		public void onComplete(final String response, final Object state) {
 			SimpleFacebook.this.runOnUiThread(new Runnable() {
 				public void run() {
@@ -230,27 +232,27 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
 			});
 		}
 
-		@Override
+		
 		public void onIOException(IOException e, Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onFileNotFoundException(FileNotFoundException e,
 				Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onMalformedURLException(MalformedURLException e,
 				Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onFacebookError(FacebookError e, Object state) {
 			// TODO Auto-generated method stub
 			
