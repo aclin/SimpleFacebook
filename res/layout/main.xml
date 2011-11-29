@@ -13,15 +13,13 @@
         android:layout_marginTop="10dip"
         android:layout_marginLeft="10dip"
         android:text="@string/hello"
-        android:textSize="25dip"/>
+        android:textSize="30dip"/>
     
     <Button android:id="@+id/btLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="10dip"
-        android:layout_marginRight="10dip"
         android:text="Login"/>
     
     <ListView android:id="@+id/lvFriends"

@@ -12,9 +12,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,15 +29,15 @@ import android.widget.TextView;
 
 import com.alin.simplefacebook.AsyncFacebookRunner.RequestListener;
 
-public class Profile extends Activity {
+public class Profile extends Activity implements View.OnClickListener {
 	
 	private static final String TAG = "Class_Profile";
 	
 	private Facebook fb = SimpleFacebook.fb;
 	private AsyncFacebookRunner fbAsyncRunner = new AsyncFacebookRunner(fb);
 	
-	String profileName;
-	String profileId;
+	private String profileName;
+	private String profileId;
 	
 	TextView tvFrdName;
 	EditText etWallMsg;
@@ -52,8 +56,9 @@ public class Profile extends Activity {
         setContentView(R.layout.profile);
         
         findViews();
+        setListeners();
         
-        fbArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        //fbArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         fbListItem = new ArrayList<HashMap<String, Object>>();
         listItemAdapter = new SimpleAdapter(this, fbListItem, R.layout.profile_listview, new String[] { "name", "msg" }, new int[] { R.id.tvProfileName, R.id.tvProfileMsg });
         
@@ -62,25 +67,8 @@ public class Profile extends Activity {
         profileId = b.getString(SimpleFacebook.KEY_ID);
         
         tvFrdName.setText(profileName);
-        //Log.d(TAG, "Name: " + profileName);
         
-        URL img_value = null;
-        try {
-			img_value = new URL("http://graph.facebook.com/" + profileId + "/picture?type=large");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        Bitmap mIcon1;
-		try {
-			mIcon1 = BitmapFactory.decodeStream(img_value.openConnection().getInputStream());
-			ivProfileImg.setImageBitmap(mIcon1);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        
+        displayProfilePicture();
         displayWallMsgs();
     }
     
@@ -89,10 +77,42 @@ public class Profile extends Activity {
     	etWallMsg = (EditText) findViewById(R.id.etWallMsg);
     	lvMsgs = (ListView) findViewById(R.id.lvMsgs);
     	ivProfileImg = (ImageView) findViewById(R.id.ivProfileImg);
+    	btPostMsg = (Button) findViewById(R.id.btPostMsg);
+    }
+    
+    private void setListeners() {
+    	btPostMsg.setOnClickListener(this);
+    }
+    
+    public void onClick(View v) {
+    	if (v.getId() == R.id.btPostMsg) {
+	    	Bundle b = new Bundle();
+	    	b.putString("method", "POST");
+	    	b.putString("message", etWallMsg.getText().toString());
+	    	fbAsyncRunner.request(profileId + "/feed", b, postListener);
+    	}
+    }
+    
+    private void displayProfilePicture() {
+    	URL img_value = null;
+        try {
+			img_value = new URL("http://graph.facebook.com/" + profileId + "/picture");
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+        
+        Bitmap mIcon1;
+        
+		try {
+			mIcon1 = BitmapFactory.decodeStream(img_value.openConnection().getInputStream());
+			ivProfileImg.setImageBitmap(mIcon1);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     private void displayWallMsgs() {
-    	fbAsyncRunner.request("me/feed", feedsListener);
+    	fbAsyncRunner.request(profileId + "/feed", feedsListener);
     	//lvMsgs.setAdapter(fbArrayAdapter);
     	lvMsgs.setAdapter(listItemAdapter);
     }
@@ -153,6 +173,43 @@ public class Profile extends Activity {
 			
 		}
 
+		public void onFacebookError(FacebookError e, Object state) {
+			// TODO Auto-generated method stub
+			
+		}
+    };
+    
+    private RequestListener postListener = new RequestListener() {
+
+		@Override
+		public void onComplete(String response, Object state) {
+			Intent i_return = new Intent();
+			i_return.putExtra("name", profileName);
+			setResult(RESULT_OK, i_return);
+			finish();
+		}
+
+		@Override
+		public void onIOException(IOException e, Object state) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onFileNotFoundException(FileNotFoundException e,
+				Object state) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onMalformedURLException(MalformedURLException e,
+				Object state) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
 		public void onFacebookError(FacebookError e, Object state) {
 			// TODO Auto-generated method stub
 			

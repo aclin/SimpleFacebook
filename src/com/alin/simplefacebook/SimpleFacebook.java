@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -53,10 +53,14 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
         setListeners();
         //fbArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         fbArrayAdapter = new ArrayAdapter<String>(this, R.layout.friendlist);
-        if (fb.isSessionValid())
+        if (fb.isSessionValid()) {
+			tvHello.setText("Friends List");
         	btLogin.setText("Logout");
-        else
+        	fbAsyncRunner.request("me/friends", friendsRequestListener);
+			lvFriends.setAdapter(fbArrayAdapter);
+        } else {
         	btLogin.setText("Login");
+        }
     }
     
     private void findViews() {
@@ -104,28 +108,36 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
     
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     	//Log.d(TAG, "Position: " + position + " Id: " + id);
-    	Intent i_profile = new Intent().setClass(this, Profile.class);
+    	Intent i_profile = new Intent().setClass(SimpleFacebook.this, Profile.class);
     	Bundle b = new Bundle();
     	try {
     		b.putString(KEY_NAME, friendlist.getJSONObject(position).getString("name"));
     		b.putString(KEY_ID, friendlist.getJSONObject(position).getString("id"));
-    		fbAsyncRunner.request(friendlist.getJSONObject(position).getString("id") + "/picture", profilePictureRequestListener);
     	} catch (JSONException e) {
     		e.printStackTrace();
     	}
     	i_profile.putExtras(b);
-    	//startActivityForResult(i_profile, PROFILE_REQUEST);
-    	startActivity(i_profile);
+    	
+    	startActivityForResult(i_profile, PROFILE_REQUEST);
     }
     
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == PROFILE_REQUEST) {
-        	
+        if (resultCode == RESULT_OK && requestCode == PROFILE_REQUEST) {
+        	tvHello.setText("Message sent to " + data.getStringExtra("name"));
+        	handler.postDelayed(updateUITimer, 2000);
         }
         fb.authorizeCallback(requestCode, resultCode, data);
     }
+    
+    private final Runnable updateUITimer = new Runnable() {
+    	public void run() {
+    		tvHello.setText("Friends List");
+    	}
+    };
+    
+    private final Handler handler = new Handler();
     
     private RequestListener friendsRequestListener = new RequestListener() {
 
@@ -219,43 +231,6 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
 	    			tvHello.setText("Hello World, SimpleFacebook!");
 				}
 			});
-		}
-    };
-    
-    private RequestListener profilePictureRequestListener = new RequestListener() {
-    	
-		public void onComplete(final String response, final Object state) {
-			SimpleFacebook.this.runOnUiThread(new Runnable() {
-				public void run() {
-					
-				}
-			});
-		}
-
-		
-		public void onIOException(IOException e, Object state) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		
-		public void onFileNotFoundException(FileNotFoundException e,
-				Object state) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		
-		public void onMalformedURLException(MalformedURLException e,
-				Object state) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		
-		public void onFacebookError(FacebookError e, Object state) {
-			// TODO Auto-generated method stub
-			
 		}
     };
 }

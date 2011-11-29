@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivProfileImg"
+        android:gravity="center"
         android:text="Name here"
         android:textSize="30dip"
         />
@@ -19,7 +20,7 @@
     <EditText android:id="@+id/etWallMsg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvFrdName"
+        android:layout_below="@+id/ivProfileImg"
         />
     
     <Button android:id="@+id/btPostMsg"
