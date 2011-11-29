@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -90,6 +89,10 @@ public class Profile extends Activity implements View.OnClickListener {
 	    	b.putString("method", "POST");
 	    	b.putString("message", etWallMsg.getText().toString());
 	    	fbAsyncRunner.request(profileId + "/feed", b, postListener);
+	    	Intent i_return = new Intent();
+			i_return.putExtra("name", profileName);
+			setResult(RESULT_OK, i_return);
+			finish();
     	}
     }
     
@@ -97,6 +100,7 @@ public class Profile extends Activity implements View.OnClickListener {
     	URL img_value = null;
         try {
 			img_value = new URL("http://graph.facebook.com/" + profileId + "/picture");
+			Log.d(TAG, "Got profile pic");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -133,12 +137,14 @@ public class Profile extends Activity implements View.OnClickListener {
 								if (feeds.getJSONObject(i).getString("type").equals("status")) {
 									// Check if the feed type is "status"
 									if (feeds.getJSONObject(i).getJSONObject("from").getString("id").equals(profileId)) {
-										HashMap<String, Object> map = new HashMap<String, Object>();
-										map.put("name", profileName + " says:");
-										map.put("msg", feeds.getJSONObject(i).getString("message"));
-										fbListItem.add(map);
-										//fbArrayAdapter.add(feeds.getJSONObject(i).getString("message"));
-										//Log.i(TAG, "Array Adapter count: " + fbArrayAdapter.getCount());
+										if (feeds.getJSONObject(i).has("message")) {
+											HashMap<String, Object> map = new HashMap<String, Object>();
+											map.put("name", profileName + " says:");
+											map.put("msg", feeds.getJSONObject(i).getString("message"));
+											fbListItem.add(map);
+											//fbArrayAdapter.add(feeds.getJSONObject(i).getString("message"));
+											//Log.i(TAG, "Array Adapter count: " + fbArrayAdapter.getCount());
+										}
 									}
 									//if (fbArrayAdapter.getCount() == 3)
 										//break;
@@ -183,10 +189,7 @@ public class Profile extends Activity implements View.OnClickListener {
 
 		@Override
 		public void onComplete(String response, Object state) {
-			Intent i_return = new Intent();
-			i_return.putExtra("name", profileName);
-			setResult(RESULT_OK, i_return);
-			finish();
+			
 		}
 
 		@Override

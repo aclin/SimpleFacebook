@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivProfileImg"
+        android:layout_marginLeft="3dip"
         android:gravity="center"
         android:text="Name here"
         android:textSize="30dip"

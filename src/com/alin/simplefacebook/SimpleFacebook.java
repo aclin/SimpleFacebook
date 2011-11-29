@@ -126,7 +126,7 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PROFILE_REQUEST) {
         	tvHello.setText("Message sent to " + data.getStringExtra("name"));
-        	handler.postDelayed(updateUITimer, 2000);
+        	//handler.postDelayed(updateUITimer, 2000);
         }
         fb.authorizeCallback(requestCode, resultCode, data);
     }
