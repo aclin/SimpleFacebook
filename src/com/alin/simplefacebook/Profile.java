@@ -89,10 +89,6 @@ public class Profile extends Activity implements View.OnClickListener {
 	    	b.putString("method", "POST");
 	    	b.putString("message", etWallMsg.getText().toString());
 	    	fbAsyncRunner.request(profileId + "/feed", b, postListener);
-	    	Intent i_return = new Intent();
-			i_return.putExtra("name", profileName);
-			setResult(RESULT_OK, i_return);
-			finish();
     	}
     }
     
@@ -100,7 +96,6 @@ public class Profile extends Activity implements View.OnClickListener {
     	URL img_value = null;
         try {
 			img_value = new URL("http://graph.facebook.com/" + profileId + "/picture");
-			Log.d(TAG, "Got profile pic");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -187,32 +182,39 @@ public class Profile extends Activity implements View.OnClickListener {
     
     private RequestListener postListener = new RequestListener() {
 
-		@Override
+		
 		public void onComplete(String response, Object state) {
-			
+			Profile.this.runOnUiThread(new Runnable () {
+				public void run() {
+					Intent i_return = new Intent();
+					i_return.putExtra("name", profileName);
+					setResult(RESULT_OK, i_return);
+					finish();
+				}
+			});
 		}
 
-		@Override
+		
 		public void onIOException(IOException e, Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onFileNotFoundException(FileNotFoundException e,
 				Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onMalformedURLException(MalformedURLException e,
 				Object state) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+		
 		public void onFacebookError(FacebookError e, Object state) {
 			// TODO Auto-generated method stub
 			

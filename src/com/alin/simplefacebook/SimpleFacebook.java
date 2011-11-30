@@ -27,7 +27,7 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
 	
 	private static final String TAG = "SimpleFacebook";
 	
-	public static final String APP_ID = "175729095772478";
+	public static final String APP_ID = "114456528669615";
 	public static final String KEY_ID = "FriendID";
 	public static final String KEY_NAME = "FriendName";
 	
@@ -126,7 +126,7 @@ public class SimpleFacebook extends Activity implements View.OnClickListener, Ad
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PROFILE_REQUEST) {
         	tvHello.setText("Message sent to " + data.getStringExtra("name"));
-        	//handler.postDelayed(updateUITimer, 2000);
+        	handler.postDelayed(updateUITimer, 2000);
         }
         fb.authorizeCallback(requestCode, resultCode, data);
     }
